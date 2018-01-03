@@ -4,6 +4,8 @@ services:
     image: uhopper/hadoop-namenode:2.8.1
     hostname: namenode
     container_name: namenode
+    ports:
+      - '50070:50070'
     networks:
       - hadoop
     volumes:
@@ -34,7 +36,33 @@ services:
       - datanode2:/hadoop/dfs/data
     env_file:
       - ./hadoop-basic.env
-
+  resourcemanager:
+    image: uhopper/hadoop-resourcemanager:2.8.1
+    hostname: resourcemanager
+    container_name: resourcemanager
+    networks:
+      - hadoop
+    ports:
+      - '8088:8088'  
+    env_file:
+      - ./hadoop-basic.env
+  nodemanager1:
+    image: uhopper/hadoop-nodemanager:2.8.1
+    hostname: nodemanager1
+    container_name: nodemanager1
+    networks:
+      - hadoop
+    env_file:
+      - ./hadoop-basic.env
+  spark:
+    image: uhopper/hadoop-spark
+    hostname: spark
+    container_name: spark
+    networks:
+      - hadoop
+    env_file:
+      - ./hadoop-basic.env
+    command: tail -f /var/log/dmesg
 networks:
   hadoop:
 
@@ -42,5 +70,7 @@ volumes:
   namenode:
   datanode1:
   datanode2:
+  
+  
 
 # vim: sw=2
